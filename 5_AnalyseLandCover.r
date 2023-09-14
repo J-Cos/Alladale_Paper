@@ -5,8 +5,8 @@
 #1: Dependencies
     #packages
         library(terra)
-        library(raster)
-        library(caret)
+        #library(raster)
+        #library(caret)
         library(tidyverse)
         library(tidyterra)
         library(ggplot2)
@@ -23,8 +23,8 @@
     # load fitted randomforest models
         rfMods<-readRDS(file.path("Outputs", "RandomForestModels.RDS"))
 
-    # Importing satellite data #
-        sc1921<-terra::rast(file.path("Outputs", "sc1921.tif"))
+    # Importing supervised classification #
+        sc1921<-terra::rast(file.path("Outputs", "sc1921.tif")) 
         levels(sc1921)<-data.frame(1:5, levels(TestTrain[["train1921"]][["PointVal_df"]]$response))
 
         sc07<-terra::rast(file.path("Outputs", "sc07.tif"))
@@ -33,10 +33,17 @@
     #load alladale shapefile
         Alladale<-vect("Data/alladale.shp")
         Alladale<-project(Alladale, crs(sc1921))
-        enclosure<-vect("Data/175haenclosure.shp")
-        enclosure<-project(enclosure, crs(sc1921))
+        Enclosures<-vect("Outputs/Enclosures")
+        Enclosures<-project(Enclosures, crs(sc1921))
+        StudyBuffer<-vect("Outputs/StudyBuffer")
+        StudyBuffer<-project(StudyBuffer, crs(sc1921))
 
-    # get land cover change raster
+# 3. crop to study buffer
+    sc1921<-sc1921 %>% crop (., ext(StudyBuffer)) %>% mask(StudyBuffer)
+    sc07<-sc07 %>% crop (., ext(StudyBuffer)) %>% mask(StudyBuffer)
+
+
+# 4.  get land cover change raster
         m<-as.matrix(rbind(  c(1, 2),
                             c(2, 1),
                             c(3, 2),
@@ -48,44 +55,132 @@
         LCchange<-terra::as.factor(LCchange)
         levels(LCchange)<-data.frame(-2:2, c("d2", "d", "n", "u", "u2"))
 
-#3. make landcover plots
+#5. make landcover tables
+    #table 1
         cbind(
             MakeAccTab(testDat=TestTrain[["test07"]]),
             MakeAccTab(testDat=TestTrain[["test1921"]])
         ) %>%
         write.csv("Figures/Table1.csv")
 
+    #table 2
+        #inside
+        GetLandCoverPercents<-function(sc, inside, mask=Alladale) {
+            dat<-sc %>%
+                mask(mask, inverse=!inside) %>% 
+                values(.) %>% 
+                table(.) %>%
+                `/`(sum(.)) %>%
+                `*`(100) %>%
+                round(., digits=2)
+            return(dat)
+        }
+        
+        Tab2base<-rbind(
+            cbind(
+                GetLandCoverPercents(sc07, inside=TRUE),
+                GetLandCoverPercents(sc1921, inside=TRUE)
+            ),
+            cbind(
+                GetLandCoverPercents(sc07, inside=FALSE),
+            GetLandCoverPercents(sc1921, inside=FALSE)
+            ),
+            cbind(
+                GetLandCoverPercents(sc07, inside=TRUE, mask=Enclosures),
+                GetLandCoverPercents(sc1921, inside=TRUE, mask=Enclosures)
+            ),
+            cbind(
+                GetLandCoverPercents(sc07, inside=TRUE, mask=erase(Alladale,Enclosures)),
+                GetLandCoverPercents(sc1921, inside=TRUE, mask=erase(Alladale,Enclosures))
+            )
+        ) %>%
+        as.data.frame
+
+    Tab2base$Class<-c("Grassy", "Rocky", "Scrubland", "Trees", "Water")
+    Tab2base$Area<-c(rep("Alladale",5), rep("Buffer", 5), rep("Enclosures",5), rep("Alladale excl. enclosures",5))
+    names(Tab2base)[1:2]<-c("2007 area cover (%)", "2021 area cover (%)")
+  
+    Tab2base %>%
+        as_tibble %>%
+        mutate(Change=case_when(`2007 area cover (%)`> `2021 area cover (%)` ~ "-",
+                                `2007 area cover (%)`< `2021 area cover (%)` ~ "+")) %>%
+        select(Area, Class, `2007 area cover (%)`, `2021 area cover (%)`, Change) %>%
+        write.csv("Figures/Table2.csv")
+  
+
+# x. make google earth imagery plot
+library(cowplot)
+library(magick)
+library(ggplot2)
+
+UkMap <-ggmap::get_stamenmap( bbox = c(left = -13, bottom = 49.5, right = 4.1, top = 59),
+                        zoom = 5, maptype = "toner-background")
+
+LocationMap<-ggmap::ggmap(UkMap) +
+                        ggplot2::annotate("point", x=-4.633, y=57.869, color="red", fill="red", size=5)+
+                        ggplot2::theme(                  axis.title.x = element_blank(),
+                                                axis.title.y = element_blank(),
+                                                axis.text= element_text(size = 12, hjust=0))
 
 
-
-#3. Make landcover change plots
+# 6. Make landcover change plots
             p1<-ggplot() +
                 geom_spatraster( data = sc07,alpha = 1, na.rm=TRUE  )+ 
                 geom_spatvector(data=Alladale, color="black", linewidth=2, fill=NA)+
-                geom_spatvector(data=enclosure, color="black", linewidth=1, fill=NA)+
+                geom_spatvector(data=Enclosures, color="black", linewidth=1, fill=NA)+
                 scale_fill_manual(values = c("green", "dark grey", "brown", "dark green", "blue"), na.translate=FALSE)+
                 theme_classic()
             p2<-ggplot() +
                 geom_spatraster( data = sc1921,alpha = 1, na.rm=TRUE  )+ 
                 geom_spatvector(data=Alladale, color="black", linewidth=2, fill=NA)+
-                geom_spatvector(data=enclosure, color="black", linewidth=1, fill=NA)+
+                geom_spatvector(data=Enclosures, color="black", linewidth=1, fill=NA)+
                 scale_fill_manual(values = c("green", "dark grey", "brown", "dark green", "blue"), na.translate=FALSE)+
                 theme_classic()
             p3<-ggplot() +
                 geom_spatraster( data = LCchange,alpha = 1, na.rm=TRUE  )+ 
                 geom_spatvector(data=Alladale, color="black", linewidth=2, fill=NA)+
-                geom_spatvector(data=enclosure, color="black", linewidth=1, fill=NA)+
+                geom_spatvector(data=Enclosures, color="black", linewidth=1, fill=NA)+
                 scale_fill_manual(values = c("dark red", "red", "grey", "green", "dark green"), na.translate=FALSE)+
                 theme_classic()
-        
+            
+            zoom<-as.vector(terra::ext(Enclosures))
+            p4<-ggplot() +
+                geom_spatraster( data = LCchange,alpha = 1, na.rm=TRUE  )+ 
+                geom_spatvector(data=Alladale, color="black", linewidth=2, fill=NA)+
+                geom_spatvector(data=Enclosures, color="black", linewidth=1, fill=NA)+
+                scale_fill_manual(values = c("dark red", "red", "grey", "green", "dark green"), na.translate=FALSE)+
+                theme_classic() + 
+                coord_sf(xlim=c(zoom[1], zoom[2]), ylim=c(zoom[3], zoom[4]))
+
+    center<-theme(plot.title = element_text(hjust = 0.5))
+
     png(file.path("Figures","Figure2.png"), height = 8.3, width = 15, units = 'in', res = 300)
             cowplot::ggdraw() +
                 cowplot::draw_plot(p1+ggtitle("2007"), x=0, y=0.5, width=0.5, height=0.5)+
-                cowplot::draw_plot(p2+ggtitle("2019/2021"), x=0.5, y=0.5, width=0.5, height=0.5)+
-                cowplot::draw_plot(p3+ggtitle("Land Cover Change"), x=0.5, y=0, width=0.5, height=0.5)
+                cowplot::draw_plot(p2+ggtitle("2019/2021"), x=0, y=0, width=0.5, height=0.5)+
+                cowplot::draw_plot(p3+ggtitle("Land Cover Change"), x=0.5, y=0.5, width=0.5, height=0.5)+
+                cowplot::draw_plot(p4+ggtitle("Land Cover Change zoomed to enclosures"), x=0.5, y=0, width=0.5, height=0.5)
     dev.off()
 
-# 4. Alternative plots with some zoomed areas
+
+    png(file.path("Figures","Figure1.png"), height = 8.3, width = 15, units = 'in', res = 300)
+            cowplot::ggdraw() +
+                cowplot::draw_plot(LocationMap, x=0, y=0, width=0.4*5/3, height=1)+
+                cowplot::draw_image("Data/Grassy.png", x=0.4*5/3, y=0.8, width=0.2*5/3, height=0.2)+
+                cowplot::draw_image("Data/Scrubby.png", x=0.4*5/3, y=0.6, width=0.2*5/3, height=0.2)+
+                cowplot::draw_image("Data/Trees.png", x=0.4*5/3, y=0.4, width=0.2*5/3, height=0.2)+
+                cowplot::draw_image("Data/Rocky.png", x=0.4*5/3, y=0.2, width=0.2*5/3, height=0.2)+
+                cowplot::draw_image("Data/Water.png", x=0.4*5/3, y=0, width=0.2*5/3, height=0.2)+
+                cowplot::draw_plot_label(   label = c("A", "B", "C", "D", "E", "F"), 
+                                        size = 15, 
+                                        x = c(0, 0.4*5/3, 0.4*5/3, 0.4*5/3, 0.4*5/3, 0.4*5/3), 
+                                        y = c(1, 1,0.8,0.6,0.4,0.2))
+    dev.off()
+
+
+#####################################################
+#######################################################
+# 7. Alternative plots with some zoomed areas
 
     #1921
     png(file.path("Figures","LandCoverClassification_1921.png"), height = 8.3, width = 15, units = 'in', res = 300)
