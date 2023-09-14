@@ -6,8 +6,8 @@
     #packages
         library(sf)
         library(terra)
-        library(raster)
-        library(rgdal)
+        #library(raster)
+        #library(rgdal)
         library(tidyverse)
 
     #load project functions

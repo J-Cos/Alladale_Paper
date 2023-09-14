@@ -4,10 +4,9 @@
 
 #1: Dependencies
     #packages
-        library(raster)
+        #library(raster)
         library(terra)
         library(tidyverse)
-        library(RStoolbox)
 
     #load project functions
         function_files<-list.files(file.path("Code","Functions"))
