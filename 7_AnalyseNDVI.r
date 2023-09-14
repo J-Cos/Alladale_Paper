@@ -105,7 +105,7 @@ library(ggpointdensity)
     p4<-plotNdviAgainstLcChange( mk_MAXXNDVI_monthly_res, MAXNDVI_monthly, LCchange, mask=Alladale, ComparatorArea=Enclosures, xlims=c(-2048, 2048))
     p5<-plotNdviAgainstLcChange( mk_INDVI_monthly_res, INDVI_monthly, LCchange, mask=Alladale, ComparatorArea=Enclosures, xlims=c(-2048, 2048))
     p6<-plotNdviAgainstLcChange( mk_MINNDVI_monthly_res, MINNDVI_monthly, LCchange, mask=Alladale, ComparatorArea=Enclosures, xlims=c(-2048, 2048))
-        png(file.path("Figures","FigureS3.png"), height = 8.3, width = 15, units = 'in', res = 300)
+        png(file.path("Figures","FigureS2.png"), height = 8.3, width = 15, units = 'in', res = 300)
             cowplot::ggdraw() +
                 cowplot::draw_plot(p1+ggtitle("Max NDVI monthly")+ theme(plot.title = element_text(hjust = 0.5)), x=0.04, y=0.5, width=0.32, height=0.5)+
                 cowplot::draw_plot(p2+ggtitle("I-NDVI monthly")+ theme(plot.title = element_text(hjust = 0.5)), x=0.36, y=0.5, width=0.32, height=0.5)+
@@ -143,7 +143,7 @@ library(ggpointdensity)
             zoom<-as.vector(terra::ext(Enclosures))
             p4<-plotNdviMetric(mk_INDVI_monthly_res, INDVI_monthly) + coord_sf(xlim=c(zoom[1], zoom[2]), ylim=c(zoom[3], zoom[4]))
 
-        png(file.path("Figures","FigureS2.png"), height = 8.3, width = 15, units = 'in', res = 300)
+        png(file.path("Figures","FigureS1.png"), height = 8.3, width = 15, units = 'in', res = 300)
             cowplot::ggdraw() +
                 cowplot::draw_plot(p1+ggtitle("Max NDVI - monthly"), x=0, y=0.5, width=0.5, height=0.5)+
                 cowplot::draw_plot(p2+ggtitle("I-NDVI - monthly"), x=0.5, y=0.5, width=0.5, height=0.5)+
