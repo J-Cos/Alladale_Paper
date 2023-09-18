@@ -76,6 +76,8 @@ library(ggpointdensity)
 
 #make some plots
 
+    center<-theme(plot.title = element_text(hjust = 0.5))
+
     #fig 4
     p1<-plotNdviAgainstLcChange( mk_MAXXNDVI_res, MAXNDVI_smooth, LCchange)
     p2<-plotNdviAgainstLcChange( mk_INDVI_res, INDVI_smooth, LCchange)
@@ -86,9 +88,9 @@ library(ggpointdensity)
 
         png(file.path("Figures","Figure4.png"), height = 8.3, width = 15, units = 'in', res = 300)
             cowplot::ggdraw() +
-                cowplot::draw_plot(p1+ylab("NDVI metric\nchange")+xlab("")+ggtitle("Max NDVI")+ theme(plot.title = element_text(hjust = 0.5)), x=0.04, y=0.5, width=0.32, height=0.5)+
-                cowplot::draw_plot(p2+ylab("")+xlab("")+ggtitle("I-NDVI")+ theme(plot.title = element_text(hjust = 0.5)), x=0.36, y=0.5, width=0.32, height=0.5)+
-                cowplot::draw_plot(p3+ylab("")+xlab("")+ggtitle("Min NDVI")+ theme(plot.title = element_text(hjust = 0.5)), x=0.68, y=0.5, width=0.32, height=0.5) +
+                cowplot::draw_plot(p1+ylab("NDVI metric\nchange")+xlab("")+ggtitle("Max NDVI")+ center, x=0.04, y=0.5, width=0.32, height=0.5)+
+                cowplot::draw_plot(p2+ylab("")+xlab("")+ggtitle("I-NDVI")+ center, x=0.36, y=0.5, width=0.32, height=0.5)+
+                cowplot::draw_plot(p3+ylab("")+xlab("")+ggtitle("Min NDVI")+ center, x=0.68, y=0.5, width=0.32, height=0.5) +
                 cowplot::draw_plot(p4+ylab("NDVI metric\nchange")+xlab("Land cover\nchange"), x=0.04, y=0, width=0.32, height=0.5)+
                 cowplot::draw_plot(p5+ylab("")+xlab("Land cover\nchange"), x=0.36, y=0, width=0.32, height=0.5)+
                 cowplot::draw_plot(p6+ylab("")+xlab("Land cover\nchange"),  x=0.68, y=0, width=0.32, height=0.5) +
@@ -107,9 +109,9 @@ library(ggpointdensity)
     p6<-plotNdviAgainstLcChange( mk_MINNDVI_monthly_res, MINNDVI_monthly, LCchange, mask=Alladale, ComparatorArea=Enclosures, xlims=c(-2048, 2048))
         png(file.path("Figures","FigureS2.png"), height = 8.3, width = 15, units = 'in', res = 300)
             cowplot::ggdraw() +
-                cowplot::draw_plot(p1+ggtitle("Max NDVI monthly")+ theme(plot.title = element_text(hjust = 0.5)), x=0.04, y=0.5, width=0.32, height=0.5)+
-                cowplot::draw_plot(p2+ggtitle("I-NDVI monthly")+ theme(plot.title = element_text(hjust = 0.5)), x=0.36, y=0.5, width=0.32, height=0.5)+
-                cowplot::draw_plot(p3+ggtitle("Min NDVI monthly")+ theme(plot.title = element_text(hjust = 0.5)), x=0.68, y=0.5, width=0.32, height=0.5) +
+                cowplot::draw_plot(p1+ggtitle("Max NDVI monthly")+ center, x=0.04, y=0.5, width=0.32, height=0.5)+
+                cowplot::draw_plot(p2+ggtitle("I-NDVI monthly")+ center, x=0.36, y=0.5, width=0.32, height=0.5)+
+                cowplot::draw_plot(p3+ggtitle("Min NDVI monthly")+ center, x=0.68, y=0.5, width=0.32, height=0.5) +
                 cowplot::draw_plot(p4, x=0.04, y=0, width=0.32, height=0.5)+
                 cowplot::draw_plot(p5, x=0.36, y=0, width=0.32, height=0.5)+
                 cowplot::draw_plot(p6,  x=0.68, y=0, width=0.32, height=0.5) +
@@ -125,17 +127,17 @@ library(ggpointdensity)
             p3<-plotNdviMetric(mk_MINNDVI_res, MINNDVI_smooth)+theme(legend.position = "none")
             zoom<-as.vector(terra::ext(Enclosures))
             p4<-plotNdviMetric(mk_INDVI_res, INDVI_smooth) + coord_sf(xlim=c(zoom[1], zoom[2]), ylim=c(zoom[3], zoom[4])) +theme(legend.position = "none")
-
+    
             legend <- cowplot::get_legend(p1) 
 
             p1<-p1+theme(legend.position = "none")
 
         png(file.path("Figures","Figure3.png"), height = 8.3, width = 15, units = 'in', res = 300)
             cowplot::ggdraw() +
-                cowplot::draw_plot(p1+ggtitle("Max NDVI"), x=0, y=0.5, width=0.5, height=0.5)+
-                cowplot::draw_plot(p2+ggtitle("I-NDVI"), x=0.45, y=0.5, width=0.5, height=0.5)+
-                cowplot::draw_plot(p3+ggtitle("Min NDVI"), x=0, y=0, width=0.5, height=0.5) +
-                cowplot::draw_plot(p4+ggtitle("I-NDVI, zoomed to enclosures"), x=0.45, y=0, width=0.5, height=0.5) +
+                cowplot::draw_plot(p1+ggtitle("Max NDVI")+center, x=0, y=0.5, width=0.5, height=0.5)+
+                cowplot::draw_plot(p2+ggtitle("I-NDVI")+center, x=0.45, y=0.5, width=0.5, height=0.5)+
+                cowplot::draw_plot(p3+ggtitle("Min NDVI")+center, x=0, y=0, width=0.5, height=0.5) +
+                cowplot::draw_plot(p4+ggtitle("I-NDVI, zoomed to enclosures")+center, x=0.45, y=0, width=0.5, height=0.5) +
                 cowplot::draw_grob(legend, x=0.7, y=0.25, width=0.5, height=0.5)
         dev.off()
 
@@ -149,8 +151,8 @@ library(ggpointdensity)
 
         png(file.path("Figures","FigureS1.png"), height = 8.3, width = 15, units = 'in', res = 300)
             cowplot::ggdraw() +
-                cowplot::draw_plot(p1+ggtitle("Max NDVI - monthly"), x=0, y=0.5, width=0.5, height=0.5)+
-                cowplot::draw_plot(p2+ggtitle("I-NDVI - monthly"), x=0.5, y=0.5, width=0.5, height=0.5)+
-                cowplot::draw_plot(p3+ggtitle("Min NDVI - monthly"), x=0, y=0, width=0.5, height=0.5) +
-                cowplot::draw_plot(p4+ggtitle("I-NDVI - monthly zoomed to enclosures"), x=0.5, y=0, width=0.5, height=0.5) 
+                cowplot::draw_plot(p1+ggtitle("Max NDVI - monthly")+center, x=0, y=0.5, width=0.5, height=0.5)+
+                cowplot::draw_plot(p2+ggtitle("I-NDVI - monthly")+center, x=0.5, y=0.5, width=0.5, height=0.5)+
+                cowplot::draw_plot(p3+ggtitle("Min NDVI - monthly")+center, x=0, y=0, width=0.5, height=0.5) +
+                cowplot::draw_plot(p4+ggtitle("I-NDVI - monthly zoomed to enclosures")+center, x=0.5, y=0, width=0.5, height=0.5) 
         dev.off()
