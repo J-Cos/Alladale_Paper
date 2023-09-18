@@ -120,19 +120,23 @@ library(ggpointdensity)
         dev.off()
 
     #fig 3
-            p1<-plotNdviMetric(mk_MAXXNDVI_res, MAXNDVI_smooth)
-            p2<-plotNdviMetric(mk_INDVI_res, INDVI_smooth)
-            p3<-plotNdviMetric(mk_MINNDVI_res, MINNDVI_smooth)
-
+            p1<-plotNdviMetric(mk_MAXXNDVI_res, MAXNDVI_smooth) +scale_fill_manual(values = c("dark red", "red", "green", "dark green"), labels=c("significant\ndecrease\n", "insignificant\ndecrease\n", "insignificant\ndecrease\n", "significant\nincrease\n"), name = "NDVI\nmetric\nchange", na.translate=FALSE)
+            p2<-plotNdviMetric(mk_INDVI_res, INDVI_smooth)+theme(legend.position = "none")
+            p3<-plotNdviMetric(mk_MINNDVI_res, MINNDVI_smooth)+theme(legend.position = "none")
             zoom<-as.vector(terra::ext(Enclosures))
-            p4<-plotNdviMetric(mk_INDVI_res, INDVI_smooth) + coord_sf(xlim=c(zoom[1], zoom[2]), ylim=c(zoom[3], zoom[4]))
+            p4<-plotNdviMetric(mk_INDVI_res, INDVI_smooth) + coord_sf(xlim=c(zoom[1], zoom[2]), ylim=c(zoom[3], zoom[4])) +theme(legend.position = "none")
+
+            legend <- cowplot::get_legend(p1) 
+
+            p1<-p1+theme(legend.position = "none")
 
         png(file.path("Figures","Figure3.png"), height = 8.3, width = 15, units = 'in', res = 300)
             cowplot::ggdraw() +
                 cowplot::draw_plot(p1+ggtitle("Max NDVI"), x=0, y=0.5, width=0.5, height=0.5)+
-                cowplot::draw_plot(p2+ggtitle("I-NDVI"), x=0.5, y=0.5, width=0.5, height=0.5)+
+                cowplot::draw_plot(p2+ggtitle("I-NDVI"), x=0.45, y=0.5, width=0.5, height=0.5)+
                 cowplot::draw_plot(p3+ggtitle("Min NDVI"), x=0, y=0, width=0.5, height=0.5) +
-                cowplot::draw_plot(p4+ggtitle("I-NDVI zoomed to enclosures"), x=0.5, y=0, width=0.5, height=0.5) 
+                cowplot::draw_plot(p4+ggtitle("I-NDVI, zoomed to enclosures"), x=0.45, y=0, width=0.5, height=0.5) +
+                cowplot::draw_grob(legend, x=0.7, y=0.25, width=0.5, height=0.5)
         dev.off()
 
     #fig S2
