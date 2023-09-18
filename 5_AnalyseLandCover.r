@@ -113,7 +113,7 @@ library(cowplot)
 library(magick)
 library(ggplot2)
 
-UkMap <-ggmap::get_stamenmap( bbox = c(left = -13, bottom = 49.5, right = 4.1, top = 59),
+UkMap <-ggmap::get_stamenmap( bbox = c(left = -10.5, bottom = 49.5, right = 2, top = 59),
                         zoom = 5, maptype = "toner-background")
 
 LocationMap<-ggmap::ggmap(UkMap) +
@@ -121,7 +121,11 @@ LocationMap<-ggmap::ggmap(UkMap) +
                         ggplot2::theme(                  axis.title.x = element_blank(),
                                                 axis.title.y = element_blank(),
                                                 axis.text= element_text(size = 12, hjust=0))
-
+AlladaleMap<-ggplot() +
+                geom_spatvector(data=Alladale, color="black", linewidth=2, fill=NA)+
+                geom_spatvector(data=Enclosures, color="black", linewidth=1, fill=NA)+
+                geom_spatvector(data=StudyBuffer, color="black", linewidth=1, linetype=2, fill=NA)+
+                theme_classic()
 
 # 6. Make landcover change plots
             p1<-ggplot() +
@@ -165,16 +169,17 @@ LocationMap<-ggmap::ggmap(UkMap) +
 
     png(file.path("Figures","Figure1.png"), height = 8.3, width = 15, units = 'in', res = 300)
             cowplot::ggdraw() +
-                cowplot::draw_plot(LocationMap, x=0, y=0, width=0.4*5/3, height=1)+
-                cowplot::draw_image("Data/Grassy.png", x=0.4*5/3, y=0.8, width=0.2*5/3, height=0.2)+
-                cowplot::draw_image("Data/Scrubby.png", x=0.4*5/3, y=0.6, width=0.2*5/3, height=0.2)+
-                cowplot::draw_image("Data/Trees.png", x=0.4*5/3, y=0.4, width=0.2*5/3, height=0.2)+
-                cowplot::draw_image("Data/Rocky.png", x=0.4*5/3, y=0.2, width=0.2*5/3, height=0.2)+
-                cowplot::draw_image("Data/Water.png", x=0.4*5/3, y=0, width=0.2*5/3, height=0.2)+
-                cowplot::draw_plot_label(   label = c("A", "B", "C", "D", "E", "F"), 
+                cowplot::draw_plot(LocationMap, x=0, y=0.4, width=0.4*5/3, height=0.6)+
+                cowplot::draw_plot(AlladaleMap, x=0, y=0, width=0.4*5/3, height=0.35)+
+                cowplot::draw_image("Data/Grassy.png", x=0.45, y=0.8, width=0.2*5/3, height=0.2)+
+                cowplot::draw_image("Data/Scrubby.png", x=0.45, y=0.6, width=0.2*5/3, height=0.2)+
+                cowplot::draw_image("Data/Trees.png", x=0.45, y=0.4, width=0.2*5/3, height=0.2)+
+                cowplot::draw_image("Data/Rocky.png", x=0.45, y=0.2, width=0.2*5/3, height=0.2)+
+                cowplot::draw_image("Data/Water.png", x=0.45, y=0, width=0.2*5/3, height=0.2)+
+                cowplot::draw_plot_label(   label = c("A", "B", "C", "D", "E", "F", "G"), 
                                         size = 15, 
-                                        x = c(0, 0.4*5/3, 0.4*5/3, 0.4*5/3, 0.4*5/3, 0.4*5/3), 
-                                        y = c(1, 1,0.8,0.6,0.4,0.2))
+                                        x = c(0.17,0.17, 0.49, 0.49, 0.49, 0.49, 0.49), 
+                                        y = c(1, 0.35, 1,0.8,0.6,0.4,0.2))
     dev.off()
 
 
