@@ -86,12 +86,12 @@ library(ggpointdensity)
 
         png(file.path("Figures","Figure4.png"), height = 8.3, width = 15, units = 'in', res = 300)
             cowplot::ggdraw() +
-                cowplot::draw_plot(p1+ggtitle("Max NDVI")+ theme(plot.title = element_text(hjust = 0.5)), x=0.04, y=0.5, width=0.32, height=0.5)+
-                cowplot::draw_plot(p2+ggtitle("I-NDVI")+ theme(plot.title = element_text(hjust = 0.5)), x=0.36, y=0.5, width=0.32, height=0.5)+
-                cowplot::draw_plot(p3+ggtitle("Min NDVI")+ theme(plot.title = element_text(hjust = 0.5)), x=0.68, y=0.5, width=0.32, height=0.5) +
-                cowplot::draw_plot(p4, x=0.04, y=0, width=0.32, height=0.5)+
-                cowplot::draw_plot(p5, x=0.36, y=0, width=0.32, height=0.5)+
-                cowplot::draw_plot(p6,  x=0.68, y=0, width=0.32, height=0.5) +
+                cowplot::draw_plot(p1+ylab("NDVI metric\nchange")+xlab("")+ggtitle("Max NDVI")+ theme(plot.title = element_text(hjust = 0.5)), x=0.04, y=0.5, width=0.32, height=0.5)+
+                cowplot::draw_plot(p2+ylab("")+xlab("")+ggtitle("I-NDVI")+ theme(plot.title = element_text(hjust = 0.5)), x=0.36, y=0.5, width=0.32, height=0.5)+
+                cowplot::draw_plot(p3+ylab("")+xlab("")+ggtitle("Min NDVI")+ theme(plot.title = element_text(hjust = 0.5)), x=0.68, y=0.5, width=0.32, height=0.5) +
+                cowplot::draw_plot(p4+ylab("NDVI metric\nchange")+xlab("Land cover\nchange"), x=0.04, y=0, width=0.32, height=0.5)+
+                cowplot::draw_plot(p5+ylab("")+xlab("Land cover\nchange"), x=0.36, y=0, width=0.32, height=0.5)+
+                cowplot::draw_plot(p6+ylab("")+xlab("Land cover\nchange"),  x=0.68, y=0, width=0.32, height=0.5) +
                 cowplot::draw_label("Buffer", x=0.02, y=0.85, size = 16, angle = 90)+
                 cowplot::draw_label("Alladale", x=0.02, y=0.65, size = 16, angle = 90)+
                 cowplot::draw_label("Alladale\nexcl.\nenclosures", x=0.02, y=0.38, size = 16, angle = 90)+
