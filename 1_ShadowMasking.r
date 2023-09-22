@@ -1,3 +1,5 @@
+library(terra)
+
 #load data
     elev1<-terra::rast(file.path("Data", "NASADEM_HGT_n57w005", "n57w005.hgt"))
     elev2<-terra::rast(file.path("Data", "NASADEM_HGT_n57w006", "n57w006.hgt"))
@@ -30,6 +32,27 @@
     shade<-shade2019landsat<100 | shade2007landsat<100
 
 
+# calculate summary stats for shaded area
+    #load study area to crop to 
+        StudyBuffer<-vect("Outputs/StudyBuffer")
+        StudyBuffer<-project(StudyBuffer, crs(shade))
+
+    #calulate area shaded
+        StudyShade<-crop(mask(shade, StudyBuffer), StudyBuffer)
+        propShaded<-table(values(StudyShade))/sum(!is.na(values(StudyShade)))
+        signif(propShaded*100,2)
+    
+    #calculate average elevation of shaded area
+        StudyElev<-crop(mask(elev, StudyBuffer), StudyBuffer)
+
+        getElevStats<-function(shaded) {
+            avElevShaded<-values(StudyElev*shaded)
+            u<-mean(avElevShaded, na.rm=T)
+            sd<-sd(avElevShaded, na.rm=T)
+            return(signif(c("u"=u, "sd"=sd), 2))
+        }
+        getElevStats(StudyShade)
+        getElevStats(!StudyShade)
 
 
 #save output
