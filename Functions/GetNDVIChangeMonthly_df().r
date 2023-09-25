@@ -55,7 +55,7 @@ GetNDVIChangeMonthly_df<-function(ComparatorArea, mask=StudyBuffer){
         NDVIChange_df<-bind_rows(NDVIChanges) %>%
             cbind(names(NDVIChanges),.) 
         
-        colnames(NDVIChange_df)<-c("Parameter", "Significant Decrease", "Inignificant Decrease", "Insignificant Increase", "Significant Increase")
+        colnames(NDVIChange_df)<-c("Parameter", "Significant Decrease", "Insignificant Decrease", "Insignificant Increase", "Significant Increase")
 
         return(NDVIChange_df)
     }
