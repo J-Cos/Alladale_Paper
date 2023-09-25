@@ -123,7 +123,7 @@ library(ggpointdensity)
         dev.off()
 
     #fig 3
-            p1<-plotNdviMetric(mk_MAXXNDVI_res, MAXNDVI_smooth) +scale_fill_manual(values = c("dark red", "red", "green", "dark green"), labels=c("significant\ndecrease\n", "insignificant\ndecrease\n", "insignificant\ndecrease\n", "significant\nincrease\n"), name = "NDVI\nmetric\nchange", na.translate=FALSE)
+            p1<-plotNdviMetric(mk_MAXXNDVI_res, MAXNDVI_smooth) +scale_fill_manual(values = c("dark red", "red", "green", "dark green"), labels=c("significant\ndecrease\n", "insignificant\ndecrease\n", "insignificant\nincrease\n", "significant\nincrease\n"), name = "NDVI\nmetric\nchange", na.translate=FALSE)
             p2<-plotNdviMetric(mk_INDVI_res, INDVI_smooth)+theme(legend.position = "none")
             p3<-plotNdviMetric(mk_MINNDVI_res, MINNDVI_smooth)+theme(legend.position = "none")
             zoom<-as.vector(terra::ext(Enclosures))
