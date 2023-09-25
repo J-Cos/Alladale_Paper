@@ -58,7 +58,8 @@ library(ggpointdensity)
 
 
 
-#make NDVI change table (Table 3)
+#make NDVI change table (Table 2)
+    #Table 2
     #%age pixels increasing ndvi metrics - functions don't currently work
 
     NdviTab<-rbind(GetNDVIChange_df(ComparatorArea=Alladale) ,
@@ -68,13 +69,14 @@ library(ggpointdensity)
     NdviTab<-cbind(Area=c(rep("Alladale", 3), rep("Buffer", 3), rep("Enclosures",3), rep("Alladale excl. enclosures",3)), NdviTab)
     write.csv(NdviTab, file.path("Figures", "Table3.csv"))
 
+    #Table S4
     NdviTab<-rbind(GetNDVIChangeMonthly_df(ComparatorArea=Alladale),
                 GetNDVIChangeMonthly_df(ComparatorArea=Enclosures, mask=Alladale))
     NdviTab$Parameter<-paste0(sapply(strsplit(NdviTab$Parameter,"_"), `[`, 1), " % pixels")
     NdviTab<-cbind(Area=c(rep("Alladale", 3), rep("Buffer", 3), rep("Enclosures",3), rep("Alladale excl. enclosures",3)), NdviTab)
     write.csv(NdviTab, file.path("Figures", "TableS4.csv"))
 
-#make some plots
+#make plots (3, S1, 4, S2)
 
     center<-theme(plot.title = element_text(hjust = 0.5))
 
@@ -100,7 +102,7 @@ library(ggpointdensity)
                 cowplot::draw_label("Enclosures", x=0.02, y=0.17, size = 16, angle = 90)
         dev.off()
 
-    #fig S3
+    #fig S2
     p1<-plotNdviAgainstLcChange( mk_MAXXNDVI_monthly_res, MAXNDVI_monthly, LCchange, xlims=c(-2048, 2048))
     p2<-plotNdviAgainstLcChange( mk_INDVI_monthly_res, INDVI_monthly, LCchange, xlims=c(-2048, 2048))
     p3<-plotNdviAgainstLcChange( mk_MINNDVI_monthly_res, MINNDVI_monthly, LCchange, xlims=c(-2048, 2048))
@@ -142,7 +144,7 @@ library(ggpointdensity)
                 cowplot::draw_grob(legend, x=0.7, y=0.25, width=0.5, height=0.5)
         dev.off()
 
-    #fig S2
+    #fig S1
             p1<-plotNdviMetric(mk_MAXXNDVI_monthly_res, MAXNDVI_monthly)+scale_fill_manual(values = c("dark red", "red", "green", "dark green"), labels=c("significant\ndecrease\n", "insignificant\ndecrease\n", "insignificant\nincrease\n", "significant\nincrease\n"), name = "NDVI\nmetric\nchange", na.translate=FALSE)
             p2<-plotNdviMetric(mk_INDVI_monthly_res, INDVI_monthly)+theme(legend.position = "none")
             p3<-plotNdviMetric(mk_MINNDVI_monthly_res, MINNDVI_monthly)+theme(legend.position = "none")
