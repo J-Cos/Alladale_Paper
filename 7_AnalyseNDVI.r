@@ -72,7 +72,7 @@ library(ggpointdensity)
                 GetNDVIChangeMonthly_df(ComparatorArea=Enclosures, mask=Alladale))
     NdviTab$Parameter<-paste0(sapply(strsplit(NdviTab$Parameter,"_"), `[`, 1), " % pixels")
     NdviTab<-cbind(Area=c(rep("Alladale", 3), rep("Buffer", 3), rep("Enclosures",3), rep("Alladale excl. enclosures",3)), NdviTab)
-    write.csv(NdviTab, file.path("Figures", "TableS3.csv"))
+    write.csv(NdviTab, file.path("Figures", "TableS4.csv"))
 
 #make some plots
 
@@ -107,14 +107,15 @@ library(ggpointdensity)
     p4<-plotNdviAgainstLcChange( mk_MAXXNDVI_monthly_res, MAXNDVI_monthly, LCchange, mask=Alladale, ComparatorArea=Enclosures, xlims=c(-2048, 2048))
     p5<-plotNdviAgainstLcChange( mk_INDVI_monthly_res, INDVI_monthly, LCchange, mask=Alladale, ComparatorArea=Enclosures, xlims=c(-2048, 2048))
     p6<-plotNdviAgainstLcChange( mk_MINNDVI_monthly_res, MINNDVI_monthly, LCchange, mask=Alladale, ComparatorArea=Enclosures, xlims=c(-2048, 2048))
+
         png(file.path("Figures","FigureS2.png"), height = 8.3, width = 15, units = 'in', res = 300)
             cowplot::ggdraw() +
-                cowplot::draw_plot(p1+ggtitle("Max NDVI monthly")+ center, x=0.04, y=0.5, width=0.32, height=0.5)+
-                cowplot::draw_plot(p2+ggtitle("I-NDVI monthly")+ center, x=0.36, y=0.5, width=0.32, height=0.5)+
-                cowplot::draw_plot(p3+ggtitle("Min NDVI monthly")+ center, x=0.68, y=0.5, width=0.32, height=0.5) +
-                cowplot::draw_plot(p4, x=0.04, y=0, width=0.32, height=0.5)+
-                cowplot::draw_plot(p5, x=0.36, y=0, width=0.32, height=0.5)+
-                cowplot::draw_plot(p6,  x=0.68, y=0, width=0.32, height=0.5) +
+                cowplot::draw_plot(p1+ylab("NDVI metric\nchange")+xlab("")+ggtitle("Max NDVI monthly")+ center, x=0.04, y=0.5, width=0.32, height=0.5)+
+                cowplot::draw_plot(p2+ylab("")+xlab("")+ggtitle("I-NDVI monthly")+ center, x=0.36, y=0.5, width=0.32, height=0.5)+
+                cowplot::draw_plot(p3+ylab("")+xlab("")+ggtitle("Min NDVI monthly")+ center, x=0.68, y=0.5, width=0.32, height=0.5) +
+                cowplot::draw_plot(p4+ylab("NDVI metric\nchange")+xlab("Land cover\nchange"), x=0.04, y=0, width=0.32, height=0.5)+
+                cowplot::draw_plot(p5+ylab("")+xlab("Land cover\nchange"), x=0.36, y=0, width=0.32, height=0.5)+
+                cowplot::draw_plot(p6+ylab("")+xlab("Land cover\nchange"),  x=0.68, y=0, width=0.32, height=0.5) +
                 cowplot::draw_label("Buffer", x=0.02, y=0.85, size = 16, angle = 90)+
                 cowplot::draw_label("Alladale", x=0.02, y=0.65, size = 16, angle = 90)+
                 cowplot::draw_label("Alladale\nexcl.\nenclosures", x=0.02, y=0.38, size = 16, angle = 90)+
@@ -142,17 +143,22 @@ library(ggpointdensity)
         dev.off()
 
     #fig S2
-            p1<-plotNdviMetric(mk_MAXXNDVI_monthly_res, MAXNDVI_monthly)
-            p2<-plotNdviMetric(mk_INDVI_monthly_res, INDVI_monthly)
-            p3<-plotNdviMetric(mk_MINNDVI_monthly_res, MINNDVI_monthly)
+            p1<-plotNdviMetric(mk_MAXXNDVI_monthly_res, MAXNDVI_monthly)+scale_fill_manual(values = c("dark red", "red", "green", "dark green"), labels=c("significant\ndecrease\n", "insignificant\ndecrease\n", "insignificant\nincrease\n", "significant\nincrease\n"), name = "NDVI\nmetric\nchange", na.translate=FALSE)
+            p2<-plotNdviMetric(mk_INDVI_monthly_res, INDVI_monthly)+theme(legend.position = "none")
+            p3<-plotNdviMetric(mk_MINNDVI_monthly_res, MINNDVI_monthly)+theme(legend.position = "none")
 
             zoom<-as.vector(terra::ext(Enclosures))
-            p4<-plotNdviMetric(mk_INDVI_monthly_res, INDVI_monthly) + coord_sf(xlim=c(zoom[1], zoom[2]), ylim=c(zoom[3], zoom[4]))
+            p4<-plotNdviMetric(mk_INDVI_monthly_res, INDVI_monthly) + coord_sf(xlim=c(zoom[1], zoom[2]), ylim=c(zoom[3], zoom[4]))+theme(legend.position = "none")
+
+            legend <- cowplot::get_legend(p1) 
+
+            p1<-p1+theme(legend.position = "none")
 
         png(file.path("Figures","FigureS1.png"), height = 8.3, width = 15, units = 'in', res = 300)
             cowplot::ggdraw() +
                 cowplot::draw_plot(p1+ggtitle("Max NDVI - monthly")+center, x=0, y=0.5, width=0.5, height=0.5)+
-                cowplot::draw_plot(p2+ggtitle("I-NDVI - monthly")+center, x=0.5, y=0.5, width=0.5, height=0.5)+
+                cowplot::draw_plot(p2+ggtitle("I-NDVI - monthly")+center, x=0.45, y=0.5, width=0.5, height=0.5)+
                 cowplot::draw_plot(p3+ggtitle("Min NDVI - monthly")+center, x=0, y=0, width=0.5, height=0.5) +
-                cowplot::draw_plot(p4+ggtitle("I-NDVI - monthly zoomed to enclosures")+center, x=0.5, y=0, width=0.5, height=0.5) 
+                cowplot::draw_plot(p4+ggtitle("I-NDVI - monthly zoomed to enclosures")+center, x=0.45, y=0, width=0.5, height=0.5)  +
+                cowplot::draw_grob(legend, x=0.7, y=0.25, width=0.5, height=0.5)
         dev.off()
