@@ -40,20 +40,21 @@
             #optimum mtry =3
 
             #error rates stabilise by 500 trees - visible with plot(mod1921)
+            set.seed(1) 
             mod1921 <- randomForest::randomForest(x=TestTrain[["train1921"]][["PointVal_df"]][-1], 
                                                 xtest= TestTrain[["test1921"]][["PointVal_df"]][-1] , 
                                                 y=TestTrain[["train1921"]][["PointVal_df"]]$response, 
                                                 ytest= TestTrain[["test1921"]][["PointVal_df"]]$response , 
                                                 na.action=na.omit, 
-                                                ntree=1001, 
-                                                mtry=3, 
+                                                ntree=2001, 
+                                                mtry=4, 
                                                 confusion=TRUE)
 
                 mod1921[["test"]][["confusion"]][,-6] %>%
                     write.csv("Figures/TableS2B.csv")
 
             set.seed(1) 
-            mod1921 <- randomForest::randomForest(response ~ ., data=TestTrain[["train1921"]][["PointVal_df"]], na.action=na.omit, ntree=1001, mtry=3, confusion=TRUE)
+            mod1921 <- randomForest::randomForest(response ~ ., data=TestTrain[["train1921"]][["PointVal_df"]], na.action=na.omit, ntree=2001, mtry=4, confusion=TRUE)
             sc19 <- terra::predict(object=p21, 
                         model=mod1921, 
                         type="response",
@@ -80,7 +81,7 @@
                                                 y=TestTrain[["train07"]][["PointVal_df"]]$response, 
                                                 ytest= TestTrain[["test07"]][["PointVal_df"]]$response , 
                                                 na.action=na.omit, 
-                                                ntree=1001, 
+                                                ntree=2001, 
                                                 mtry=3, 
                                                 confusion=TRUE)
 
@@ -88,7 +89,7 @@
                 write.csv("Figures/TableS2A.csv")      
 
             set.seed(1) 
-            mod07 <- randomForest::randomForest(response ~ ., data=TestTrain[["train07"]][["PointVal_df"]], na.action=na.omit, ntree=1001, mtry=3, confusion=TRUE)
+            mod07 <- randomForest::randomForest(response ~ ., data=TestTrain[["train07"]][["PointVal_df"]], na.action=na.omit, ntree=2001, mtry=3, confusion=TRUE)
             sc07 <- terra::predict(object=p07, 
                                     model=mod07, 
                                     type="response",

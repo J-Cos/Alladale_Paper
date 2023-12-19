@@ -37,13 +37,14 @@
 
     #2007
         #load
-            rastlist <- list.files(path = ("../Alladale_Paper/Data/LT05_L1TP_206020_20070501_20200830_02_T1"), pattern=glob2rx("*B?.TIF"), all.files= T, full.names= T)
-            p07 <-  terra::rast(rastlist) # only 7 bands from this older landsat spacecraft - note they are not the same bands
+            p07 <-  terra::rast("../Alladale_Paper/Outputs/Alladale2007.tif") # only 7 bands from this older landsat spacecraft - note they are not the same bands
             names(p07)<-c("B", "G", "R", "NIR", "SWIR1", "T", "SWIR2")
 
         #crop to alladale buffer  
             p07<-mask(p07, Alladale)
             p07<-crop(p07, ext(Alladale))
+            msk<-crop(msk, ext(p07))
+
 
         # mask shadows
             p07 <- mask(p07, msk)
@@ -51,6 +52,28 @@
         #calulate spectral indices
             p07<-AddBands(p07)
 
+
+    #1990
+        #load
+            p90 <-  terra::rast("../Alladale_Paper/Outputs/Alladale1990Composite_5y.tif")
+            p90<-terra::subset(p90, c(1, 2, 3, 4, 5, 9, 6))
+            names(p90)<-c("B", "G", "R", "NIR", "SWIR1", "T", "SWIR2")
+
+        #reproject
+            #p90<-terra::project(p90,terra::crs(p07)) 
+
+        #crop to alladale buffer  
+            p90<-mask(p90, Alladale)
+            p90<-crop(p90, ext(msk))
+            msk90<- crop(msk, p90)
+
+
+
+        # mask shadows
+            p90 <- mask(p90, msk90)
+
+        #calulate spectral indices
+            p90<-AddBands(p90)
 
     #is subsetting needed for NA layers?
                     #plot them to confirm
@@ -60,9 +83,13 @@
         png(file.path("Figures","LandsatBands_07.png"), height = 8.3, width = 11.7, units = 'in', res = 300)      
             terra::plot(p07, colNA="grey")
         dev.off()
+        png(file.path("Figures","LandsatBands_90Composite.png"), height = 8.3, width = 11.7, units = 'in', res = 300)      
+            terra::plot(p90, colNA="grey")
+        dev.off()
 
 #3. save output
     #testing if i can retain band names using format argument
     #terra::writeRaster(p15, file.path("Outputs", "AllIndices_p15"), format="raster", overwrite=TRUE)
     terra::writeRaster(p21, file.path("Outputs", "AllIndices_p21.tif"), overwrite=TRUE)
     terra::writeRaster(p07, file.path("Outputs", "AllIndices_p07.tif"), overwrite=TRUE)
+    terra::writeRaster(p90, file.path("Outputs", "AllIndices_p90.tif"), overwrite=TRUE)
