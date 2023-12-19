@@ -24,7 +24,7 @@
             facet_wrap(~Position, ncol=1, strip.position="left") + 
             theme(
                 strip.background = element_blank(),
-                strip.text.x = element_blank(),
+                strip.text = element_blank(),
                 legend.position="none"
             )
 

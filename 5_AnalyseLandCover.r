@@ -132,21 +132,22 @@ AlladaleMap<-ggplot() +
                 geom_spatraster( data = sc07,alpha = 1, na.rm=TRUE  )+ 
                 geom_spatvector(data=Alladale, color="black", linewidth=2, fill=NA)+
                 geom_spatvector(data=Enclosures, color="black", linewidth=1, fill=NA)+
-                scale_fill_manual(values = c("green", "dark grey", "brown", "dark green", "blue"), labels=c("Grassy", "Rocky", "Scrubland", "Trees", "Water"), name = "Land\ncover\nclass", na.translate=FALSE)+
+                ggspatial::annotation_scale() + # add scale
+                scale_fill_manual(values = c("#F0E442", "#999999", "#D55E00", "#009E73", "#0072B2"), labels=c("Grassy", "Rocky", "Scrubland", "Trees", "Water"), name = "Land\ncover\nclass", na.translate=FALSE)+
                 theme_classic()
 
             p2<-ggplot() +
                 geom_spatraster( data = sc1921,alpha = 1, na.rm=TRUE  )+ 
                 geom_spatvector(data=Alladale, color="black", linewidth=2, fill=NA)+
                 geom_spatvector(data=Enclosures, color="black", linewidth=1, fill=NA)+
-                scale_fill_manual(values = c("green", "dark grey", "brown", "dark green", "blue"), na.translate=FALSE)+
+                scale_fill_manual(values = c("#F0E442", "#999999", "#D55E00", "#009E73", "#0072B2"), labels=c("Grassy", "Rocky", "Scrubland", "Trees", "Water"), name = "Land\ncover\nclass", na.translate=FALSE)+
                 theme_classic()+
                 theme(legend.position = "none")
             p3<-ggplot() +
                 geom_spatraster( data = LCchange,alpha = 1, na.rm=TRUE  )+ 
                 geom_spatvector(data=Alladale, color="black", linewidth=2, fill=NA)+
                 geom_spatvector(data=Enclosures, color="black", linewidth=1, fill=NA)+
-                scale_fill_manual(values = c("dark red", "red", "grey", "green", "dark green"), labels=c("-2", "-1", "0", "1", "2"), name = "Land\ncover\nchange", na.translate=FALSE)+
+                scale_fill_manual(values = c("#330000", "#CC6600", "grey", "#0066CC", "#000033"), labels=c("-2", "-1", "0", "1", "2"), name = "Land\ncover\nchange", na.translate=FALSE)+
                 theme_classic()
             
             zoom<-as.vector(terra::ext(Enclosures))
@@ -154,7 +155,7 @@ AlladaleMap<-ggplot() +
                 geom_spatraster( data = LCchange,alpha = 1, na.rm=TRUE  )+ 
                 geom_spatvector(data=Alladale, color="black", linewidth=2, fill=NA)+
                 geom_spatvector(data=Enclosures, color="black", linewidth=1, fill=NA)+
-                scale_fill_manual(values = c("dark red", "red", "grey", "green", "dark green"), na.translate=FALSE)+
+                scale_fill_manual(values = c("#330000", "#CC6600", "grey", "#0066CC", "#000033"), labels=c("-2", "-1", "0", "1", "2"), name = "Land\ncover\nchange", na.translate=FALSE)+
                 theme_classic() + 
                 coord_sf(xlim=c(zoom[1], zoom[2]), ylim=c(zoom[3], zoom[4]))+
                 theme(legend.position = "none")
@@ -166,7 +167,7 @@ p3<-p3+theme(legend.position = "none")
 
     center<-theme(plot.title = element_text(hjust = 0.5))
 
-    png(file.path("Figures","Figure2.png"), height = 8.3, width = 15, units = 'in', res = 300)
+    png(file.path("Figures","Figure2.png"), height = 6, width = 12, units = 'in', res = 300)
             cowplot::ggdraw() +
                 cowplot::draw_plot(p1+ggtitle("2007 land cover")+center, x=0, y=0.5, width=0.5, height=0.5)+
                 cowplot::draw_plot(p2+ggtitle("2019/2021 land cover")+center, x=0, y=0, width=0.5, height=0.5)+
