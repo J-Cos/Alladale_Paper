@@ -125,11 +125,15 @@ library(ggpointdensity)
         dev.off()
 
     #fig 3
-            p1<-plotNdviMetric(mk_MAXXNDVI_res, MAXNDVI_smooth) +scale_fill_manual(values = c("#330000", "#CC6600", "#0066CC", "#000033"), labels=c("significant\ndecrease\n", "insignificant\ndecrease\n", "insignificant\nincrease\n", "significant\nincrease\n"), name = "NDVI\nmetric\nchange", na.translate=FALSE)
-            p2<-plotNdviMetric(mk_INDVI_res, INDVI_smooth)+theme(legend.position = "none") +scale_fill_manual(values = c("#330000", "#CC6600", "#0066CC", "#000033"), labels=c("significant\ndecrease\n", "insignificant\ndecrease\n", "insignificant\nincrease\n", "significant\nincrease\n"), name = "NDVI\nmetric\nchange", na.translate=FALSE)
-            p3<-plotNdviMetric(mk_MINNDVI_res, MINNDVI_smooth)+theme(legend.position = "none") +scale_fill_manual(values = c("#330000", "#CC6600", "#0066CC", "#000033"), labels=c("significant\ndecrease\n", "insignificant\ndecrease\n", "insignificant\nincrease\n", "significant\nincrease\n"), name = "NDVI\nmetric\nchange", na.translate=FALSE)
+            p1<-plotNdviMetric(mk_MAXXNDVI_res, MAXNDVI_smooth) +scale_fill_manual(values = c("#330000", "#CC6600", "#0066CC", "#000033"), labels=c("significant\ndecrease\n", "insignificant\ndecrease\n", "insignificant\nincrease\n", "significant\nincrease\n"), name = "NDVI\nmetric\nchange", na.translate=FALSE)+
+                ggspatial::annotation_scale()  # add scale
+            p2<-plotNdviMetric(mk_INDVI_res, INDVI_smooth)+theme(legend.position = "none") +scale_fill_manual(values = c("#330000", "#CC6600", "#0066CC", "#000033"), labels=c("significant\ndecrease\n", "insignificant\ndecrease\n", "insignificant\nincrease\n", "significant\nincrease\n"), name = "NDVI\nmetric\nchange", na.translate=FALSE)+
+                ggspatial::annotation_scale()  # add scale
+            p3<-plotNdviMetric(mk_MINNDVI_res, MINNDVI_smooth)+theme(legend.position = "none") +scale_fill_manual(values = c("#330000", "#CC6600", "#0066CC", "#000033"), labels=c("significant\ndecrease\n", "insignificant\ndecrease\n", "insignificant\nincrease\n", "significant\nincrease\n"), name = "NDVI\nmetric\nchange", na.translate=FALSE)+
+                ggspatial::annotation_scale()  # add scale
             zoom<-as.vector(terra::ext(Enclosures))
-            p4<-plotNdviMetric(mk_INDVI_res, INDVI_smooth) + coord_sf(xlim=c(zoom[1], zoom[2]), ylim=c(zoom[3], zoom[4])) +theme(legend.position = "none") +scale_fill_manual(values = c("#330000", "#CC6600", "#0066CC", "#000033"), labels=c("significant\ndecrease\n", "insignificant\ndecrease\n", "insignificant\nincrease\n", "significant\nincrease\n"), name = "NDVI\nmetric\nchange", na.translate=FALSE)
+            p4<-plotNdviMetric(mk_INDVI_res, INDVI_smooth) + coord_sf(xlim=c(zoom[1], zoom[2]), ylim=c(zoom[3], zoom[4])) +theme(legend.position = "none") +scale_fill_manual(values = c("#330000", "#CC6600", "#0066CC", "#000033"), labels=c("significant\ndecrease\n", "insignificant\ndecrease\n", "insignificant\nincrease\n", "significant\nincrease\n"), name = "NDVI\nmetric\nchange", na.translate=FALSE)+
+                ggspatial::annotation_scale()  # add scale
     
             legend <- cowplot::get_legend(p1) 
 
@@ -145,12 +149,16 @@ library(ggpointdensity)
         dev.off()
 
     #fig S1
-            p1<-plotNdviMetric(mk_MAXXNDVI_monthly_res, MAXNDVI_monthly)+scale_fill_manual(values = c("#330000", "#CC6600", "#0066CC", "#000033"), labels=c("significant\ndecrease\n", "insignificant\ndecrease\n", "insignificant\nincrease\n", "significant\nincrease\n"), name = "NDVI\nmetric\nchange", na.translate=FALSE)
-            p2<-plotNdviMetric(mk_INDVI_monthly_res, INDVI_monthly)+theme(legend.position = "none")+scale_fill_manual(values = c("#330000", "#CC6600", "#0066CC", "#000033"), labels=c("significant\ndecrease\n", "insignificant\ndecrease\n", "insignificant\nincrease\n", "significant\nincrease\n"), name = "NDVI\nmetric\nchange", na.translate=FALSE)
-            p3<-plotNdviMetric(mk_MINNDVI_monthly_res, MINNDVI_monthly)+theme(legend.position = "none")+scale_fill_manual(values = c("#330000", "#CC6600", "#0066CC", "#000033"), labels=c("significant\ndecrease\n", "insignificant\ndecrease\n", "insignificant\nincrease\n", "significant\nincrease\n"), name = "NDVI\nmetric\nchange", na.translate=FALSE)
+            p1<-plotNdviMetric(mk_MAXXNDVI_monthly_res, MAXNDVI_monthly)+scale_fill_manual(values = c("#330000", "#CC6600", "#0066CC", "#000033"), labels=c("significant\ndecrease\n", "insignificant\ndecrease\n", "insignificant\nincrease\n", "significant\nincrease\n"), name = "NDVI\nmetric\nchange", na.translate=FALSE)+
+                ggspatial::annotation_scale()  # add scale
+            p2<-plotNdviMetric(mk_INDVI_monthly_res, INDVI_monthly)+theme(legend.position = "none")+scale_fill_manual(values = c("#330000", "#CC6600", "#0066CC", "#000033"), labels=c("significant\ndecrease\n", "insignificant\ndecrease\n", "insignificant\nincrease\n", "significant\nincrease\n"), name = "NDVI\nmetric\nchange", na.translate=FALSE)+
+                ggspatial::annotation_scale()  # add scale
+            p3<-plotNdviMetric(mk_MINNDVI_monthly_res, MINNDVI_monthly)+theme(legend.position = "none")+scale_fill_manual(values = c("#330000", "#CC6600", "#0066CC", "#000033"), labels=c("significant\ndecrease\n", "insignificant\ndecrease\n", "insignificant\nincrease\n", "significant\nincrease\n"), name = "NDVI\nmetric\nchange", na.translate=FALSE)+
+                ggspatial::annotation_scale()  # add scale
 
             zoom<-as.vector(terra::ext(Enclosures))
-            p4<-plotNdviMetric(mk_INDVI_monthly_res, INDVI_monthly) + coord_sf(xlim=c(zoom[1], zoom[2]), ylim=c(zoom[3], zoom[4]))+theme(legend.position = "none") +scale_fill_manual(values = c("#330000", "#CC6600", "#0066CC", "#000033"), labels=c("significant\ndecrease\n", "insignificant\ndecrease\n", "insignificant\nincrease\n", "significant\nincrease\n"), name = "NDVI\nmetric\nchange", na.translate=FALSE)
+            p4<-plotNdviMetric(mk_INDVI_monthly_res, INDVI_monthly) + coord_sf(xlim=c(zoom[1], zoom[2]), ylim=c(zoom[3], zoom[4]))+theme(legend.position = "none") +scale_fill_manual(values = c("#330000", "#CC6600", "#0066CC", "#000033"), labels=c("significant\ndecrease\n", "insignificant\ndecrease\n", "insignificant\nincrease\n", "significant\nincrease\n"), name = "NDVI\nmetric\nchange", na.translate=FALSE)+
+                ggspatial::annotation_scale()  # add scale
 
             legend <- cowplot::get_legend(p1) 
 

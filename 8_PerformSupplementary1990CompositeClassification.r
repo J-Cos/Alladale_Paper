@@ -65,6 +65,7 @@
                 geom_spatraster( data = sc90,alpha = 1, na.rm=TRUE  )+ 
                 geom_spatvector(data=Alladale, color="black", linewidth=2, fill=NA)+
                 geom_spatvector(data=Enclosures, color="black", linewidth=1, fill=NA)+
+                ggspatial::annotation_scale() + # add scale
                 scale_fill_manual(values = c("#F0E442", "#999999", "#D55E00", "#009E73", "#0072B2"), labels=c("Grassy", "Rocky", "Scrubland", "Trees", "Water"), name = "Land\ncover\nclass", na.translate=FALSE)+
                 theme_classic()
 
@@ -74,6 +75,7 @@
 
     p90Plot<-ggplot() +
                         geom_spatraster_rgb( data = s, r=3, g=2, b=1)+
+                        ggspatial::annotation_scale() + # add scale
                         theme_classic()
 
         png(file.path("Figures","FigureSX2.png"), height = 6, width = 7, units = 'in', res = 600)
