@@ -55,6 +55,8 @@
         TestTrain<-readRDS( file.path("Outputs", "TestTrainPoints.RDS") )
 
     # Importing supervised classification #
+        sc90<-terra::rast(file.path("Outputs", "sc90.tif"))
+
         levels(sc90)<-data.frame(1:5, levels(TestTrain[["train07"]][["PointVal_df"]]$response))
 
     sc90<-sc90 %>% crop (., ext(StudyBuffer)) %>% mask(StudyBuffer)
@@ -63,7 +65,7 @@
                 geom_spatraster( data = sc90,alpha = 1, na.rm=TRUE  )+ 
                 geom_spatvector(data=Alladale, color="black", linewidth=2, fill=NA)+
                 geom_spatvector(data=Enclosures, color="black", linewidth=1, fill=NA)+
-                scale_fill_manual(values = c("green", "dark grey", "brown", "dark green", "blue"), labels=c("Grassy", "Rocky", "Scrubland", "Trees", "Water"), name = "Land\ncover\nclass", na.translate=FALSE)+
+                scale_fill_manual(values = c("#F0E442", "#999999", "#D55E00", "#009E73", "#0072B2"), labels=c("Grassy", "Rocky", "Scrubland", "Trees", "Water"), name = "Land\ncover\nclass", na.translate=FALSE)+
                 theme_classic()
 
     p90_forPlot<-p90 %>% crop (., ext(StudyBuffer)) %>% mask(StudyBuffer)
@@ -74,8 +76,12 @@
                         geom_spatraster_rgb( data = s, r=3, g=2, b=1)+
                         theme_classic()
 
-        png(file.path("Figures","CompositeClassification1988-92.png"), height = 6, width = 12, units = 'in', res = 300)
+        png(file.path("Figures","FigureSX2.png"), height = 6, width = 7, units = 'in', res = 600)
             cowplot::ggdraw() +
                 cowplot::draw_plot(cowplot::as_grob(p90Plot), x=0, y=0.5, width=1, height=0.5)+
-                cowplot::draw_plot(classiifcationPlot, x=0, y=0, width=1, height=0.5)
+                cowplot::draw_plot(classiifcationPlot, x=0.12, y=0, width=0.9, height=0.5)+
+                cowplot::draw_plot_label(   label = c("A", "B"), 
+                                        size = 15, 
+                                        x = c(0.1,0.1), 
+                                        y = c(1, 0.5))
         dev.off()
